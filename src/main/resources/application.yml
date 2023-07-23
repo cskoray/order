@@ -1,0 +1,44 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: order
+  datasource:
+    url: jdbc:mysql://localhost:3306/order?createDatabaseIfNotExist=true
+    username: root
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    properties:
+      hibernate:
+        ddl-auto: validate
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        use_sql_comments: false
+        format_sql: false
+        current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+    show-sql: false
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+
+security:
+  jwt:
+    secret: JWTSuperSecretKey654321
+    expirationInMs: 604800000
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    enabled: true
+    service-url:
+      defaultZone: http://localhost:8081/eureka
+
+feign:
+  hystrix:
+    enabled: false
+  client:
+    enabled: true
+    config:
+      default:
+        connectTimeout: 10000
+        readTimeout: 10000
