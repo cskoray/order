@@ -1,0 +1,44 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: order
+spec:
+  selector:
+    app: order
+  ports:
+    - protocol: TCP
+      port: 8086
+      targetPort: 8086
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order
+spec:
+  selector:
+    matchLabels:
+      app: order
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: order
+    spec:
+      containers:
+        - name: order
+          image: order:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8086
+          env:
+          - name: DATASOURCE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: db-secret
+                key: username
+          - name: DATASOURCE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db-secret
+                key: password
